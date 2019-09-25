@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- SERVICES - INICIO -->
+	<bean id="jsonService" class="br.com.visent.sicorp.common.service.impl.JsonServiceBean" autowire="byName" />
+	<bean id="jasperService" class="br.com.visent.sicorp.server.service.RepositorioJasperServiceBean" autowire="byName">
+		<property name="repositoryService" ref="repositoryService" />
+	</bean>
+	<bean id="reportService" class="br.com.visent.sicorp.server.service.ReportJasperServiceBean" autowire="byName">
+		<property name="engineService" ref="engineService" />
+		<property name="authenticationProvider" ref="daoAuthenticationProvider" />
+	</bean>
+	<!-- SERVICES - END -->
+
+	<!-- REPORT DATASOURCE - INICIO -->
+	<bean id="corbaReportDataSourceBean" class ="br.com.visent.sicorp.server.datasource.CorbaReportDataSourceBean" autowire="byName" />
+	<!-- REPORT DATASOURCE - END -->
+
+
+	<bean id="entryPointServlet" class="br.com.visent.sicorp.server.servlet.EntryPointServlet">
+		<property name="jsonService" ref="jsonService" />
+		<property name="authenticationProvider" ref="daoAuthenticationProvider" />
+
+		<property name="services">
+			<map>
+				<entry key="jasperService" value-ref="jasperService" />
+				<entry key="reportService" value-ref="reportService" />
+			</map>
+		</property>
+	</bean>
+
+</beans>

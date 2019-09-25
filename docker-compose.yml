@@ -1,0 +1,29 @@
+version: "3"
+services:
+  jasperdb:
+    container_name: jasperdb
+    build:
+      context: .
+      dockerfile: db.dockerfile
+    image: jasper_db
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - jasper
+  jasperserver:
+    container_name: jasperserver
+    build:
+      context: .
+      dockerfile: jasper.dockerfile
+    image: jasper_server
+    ports:
+      - 8080:8080
+    links:
+      - jasperdb
+    networks:
+      - jasper
+networks:
+  jasper:
+
